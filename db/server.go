@@ -20,7 +20,7 @@ func Run(){
 	dbConfig.DBHost 		= utils.GetEnv("DB_HOST", "localhost")
 	dbConfig.DBUser			= utils.GetEnv("DB_USER", "postgres")
 	dbConfig.DBPassword		= utils.GetEnv("DB_PASSWORD", "12345678")
-	dbConfig.DBName			= utils.GetEnv("DB_NAME", "go-graphql-gorm")
+	dbConfig.DBName			= utils.GetEnv("DB_NAME", "go-basic")
 	dbConfig.DBPort			= utils.GetEnv("DB_PORT", "5432")
 
 	flag.Parse()
