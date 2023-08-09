@@ -24,8 +24,9 @@ func NewAuthContoller (DB *gorm.DB) AuthController{
 }
 
 
-func Register(c *gin.Context){
+func (ac *AuthController)Register(c *gin.Context){
 	fmt.Println("this is register")
+	
 	var registerData models.RegisterInput
 
 	err:= c.ShouldBindJSON(&registerData)

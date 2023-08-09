@@ -13,7 +13,7 @@ import (
 )
 
 
-func Login(c *gin.Context){
+func (ac *AuthController)Login(c *gin.Context){
 	fmt.Println("this is login")
 	var loginData *models.LoginInput
 
@@ -31,25 +31,20 @@ func Login(c *gin.Context){
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": "fail", 
-			"message": "invalid email or password"})
+			"message": "email not found"})
 		return 
 	}
 
 	if err := utils.VerifiedPassword(user.Password, loginData.Password); err !=nil{
 		c.JSON(http.StatusForbidden, gin.H{
 			"status": "fail", 
-			"message": "invalid email or password"})
+			"message": "wrong password"})
 		return
 	}
-
-	// c.JSON(http.StatusOK, gin.H{
-	// 	"data" : user.ID,
-	// })
-
-
+	
 	config, _:= utils.LoadConfig(".")
 
-	access_token, err := middlewares.GenerateToken(
+	token, err := middlewares.GenerateToken(
 		config.AccessTokenExpiresIn,
 		user.ID,
 		config.AccessTokenPrivateKey,
@@ -61,65 +56,13 @@ func Login(c *gin.Context){
 		return
 	}
 
-	c.SetCookie("access_token", access_token, config.AccessTokenMaxAge*60, "/", "localhost", false, true)
+	c.SetCookie("token", token, config.AccessTokenMaxAge*60, "/", "localhost", false, true)
 
 	c.JSON(http.StatusOK, gin.H{
 		"status" : "success", 
-		"access_token" : access_token,
+		"access_token" : token,
+		"data" : loginData.Email,
 	})
-
-
-// }
-
-// func (ac *AuthController) RefreshToken(ctx *gin.Context) {
-// 	message := "can not refresh access token"
-
-// 	cookie, err := ctx.Cookie("refresh_token")
-
-// 	if err != nil {
-// 		ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{
-// 			"status" 	: "fail",
-// 			"message"	: message,
-// 		})
-// 		return
-// 	}
-// 	config, _ := utils.LoadConfig(".")
-
-// 	sub, err := utils.ValidateToken(cookie, config.RefreshTokenPublicKey)
-
-// 	if err != nil {
-// 		ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{
-// 			"status" : "fail",
-// 			"message" : err.Error(),
-// 		})
-// 		return
-// 	}
-
-// 	var user models.User
-// 	result := db.DB.First(&user, "id = ?", fmt.Sprint(sub) )
-// 	if result.Error != nil {
-// 		ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{
-// 			"status" : "fail",
-// 			"message" : err.Error(),
-// 		})
-// 	}
-
-
-// 	access_token, err := utils.CreateToken(config.AccessTokenExpiresIn, user.ID, config.AccessTokenPrivateKey)
-// 	if err != nil{
-// 		ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{
-// 			"status" : "fail",
-// 			"message" : err.Error(),
-// 		})
-// 	}
-
-// 	ctx.SetCookie("access_token", access_token, config.AccessTokenMaxAge*60, "/", "localhost", false, true)
-// 	ctx.SetCookie("logged_in", "true", config.AccessTokenMaxAge*60, "/", "localhost", false, false)
-
-// 	ctx.JSON(http.StatusOK, gin.H{
-// 		"status" : "success",
-// 		"access_token" : access_token,
-// 	})
 }
 
 func (ac *AuthController) LogoutUser(ctx *gin.Context){

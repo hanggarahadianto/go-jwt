@@ -7,44 +7,53 @@ import (
 	"fmt"
 	"go-jwt/apps/controllers"
 	"go-jwt/db"
+	"go-jwt/routes"
+	"go-jwt/utils"
 	"log"
 	"net/http"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
-// var pf = fmt.Printf
+var (
+	server					*gin.Engine
+	AuthController      	controllers.AuthController
+	AuthRouteController		routes.AuthRouteController
+)
 
-// var (
-// 	server				*gin.Engine
-// 	AuthController		controllers.AuthController
-// 	AuthRouteController	routes.AuthRouteController
-// )
-
-// func init(){
-
-// 	AuthController = controllers.NewAuthContoller(configuration.DB)
-// 	AuthRouteController = routes.NewAuthRouteController(AuthController)
-
-// 	server = gin.Default()
-
-// }
-
+func init(){
+	AuthRouteController = routes.NewAuthRouteController(AuthController)
+	gin.SetMode(gin.ReleaseMode)
+	server = gin.Default()
+}
 
 func main(){
 
-	
-	// configuration.ConnectDatabase()
-	gin.SetMode(gin.ReleaseMode)
+	config, err := utils.LoadConfig(".")
+	if err != nil {
+		log.Fatal("🚀 Could not load environment variables", err)
+	}
+
 	db.Run()
-	r := gin.Default()
-	fmt.Println("running on port 9090")
 
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowOrigins = []string{"http://localhost:9090", config.ClientOrigin}
+	corsConfig.AllowCredentials = true
 
-	r.POST("/register", controllers.Register)
-	r.POST("/login", controllers.Login)
+	server.Use(cors.New(corsConfig))
+	
+	router := server.Group("/api")
+	router.GET("/testing", func(ctx *gin.Context) {
+		message := "Welcome to Golang with Gorm and Postgres"
+		ctx.JSON(http.StatusOK, gin.H{"status": "success", "message": message})
+	})
 
-	log.Fatal(http.ListenAndServe(":9090", r))
+	AuthRouteController.AuthRoute(router)
+
+	var serverPort = "9090"
+	fmt.Print("server running on port " + serverPort)
+	log.Fatal(server.Run(":"+serverPort))
 
 	// handleRouter()
 

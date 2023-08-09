@@ -2,9 +2,9 @@ package middlewares
 
 import (
 	"fmt"
+
 	"go-jwt/apps/models"
-	"go-jwt/configuration"
-	"go-jwt/initializer"
+	"go-jwt/db"
 	"go-jwt/utils"
 	"net/http"
 	"strings"
@@ -35,8 +35,8 @@ func DeserializeUser() gin.HandlerFunc{
 			return
 		}
 
-		config, _ := initializer.LoadConfig(".")
-		sub, err := utils.ValidateToken(access_token, config.AccessTokenPublicKey)
+		config, _ := utils.LoadConfig(".")
+		sub, err := ValidateToken(access_token, config.AccessTokenPublicKey)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"status": "fail",
@@ -46,7 +46,7 @@ func DeserializeUser() gin.HandlerFunc{
 		}
 		
 		var user models.User
-		result:= configuration.DB.First(&user, "id = ?", fmt.Sprint(sub))
+		result:= db.DB.First(&user, "id = ?", fmt.Sprint(sub))
 		if result.Error != nil {
 			ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{
 				"status" : "fail",

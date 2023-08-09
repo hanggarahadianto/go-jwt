@@ -6,12 +6,14 @@ import (
 
 type User struct{
 
-	ID        uint      `json:"id" gorm:"primaryKey"`
-	Name      string    `gorm:"type:varchar(255);not null"`
-	Email     string    `gorm:"uniqueIndex;not null"`
-	Password  string    `gorm:"not null"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID        			uint      `json:"id" gorm:"primaryKey"`
+	Name      			string    `gorm:"type:varchar(255);not null"`
+	Email     			string    `gorm:"uniqueIndex;not null"`
+	Password  			string    `gorm:"not null"`
+	PasswordResetToken	string	  
+	PasswordResetAt		time.Time
+	CreatedAt 			time.Time
+	UpdatedAt 			time.Time
 }
 
 type RegisterInput struct {
@@ -32,6 +34,15 @@ type RegisterInput struct {
 type LoginInput struct {
 	Email    string `json:"email"  binding:"required"`
 	Password string `json:"password"  binding:"required"`
+}
+
+type ForgotPasswordInput struct{
+	Email string `json:"email" binding:"required"`
+}
+
+type ResetPassword struct {
+	Password 		string `json:"password"  binding:"required"`
+	PasswordConfirm	string `json:"passwordConfirm" binding:"required"`
 }
 
 type UserResponse struct {
