@@ -3,16 +3,11 @@ package db
 import (
 	"fmt"
 	"go-jwt/apps/models"
+	"log"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
-
-func checkErr(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
 
 var DB *gorm.DB
 
@@ -24,13 +19,19 @@ func InitializeDb(dbConfig DbConfig){
 	dbConfig.DBPassword,
 	dbConfig.DBName,
 )
-db , err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	checkErr(err)
+	db , err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if err != nil {
+	log.Fatal("Failed to connect to the Database")
+	}
 
 	fmt.Println("konek ke pg")
 	
-	db.AutoMigrate(&models.User{})
+	db.Exec("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\"")
 
+	db.AutoMigrate(
+		&models.User{},
+		&models.Post{},
+	)
 
 	DB = db
 }

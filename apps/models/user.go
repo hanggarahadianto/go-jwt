@@ -2,11 +2,13 @@ package models
 
 import (
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type User struct{
 
-	ID        			uint      `json:"id" gorm:"primaryKey"`
+	ID        			uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();primary_key"`
 	Name      			string    `gorm:"type:varchar(255);not null"`
 	Email     			string    `gorm:"uniqueIndex;not null"`
 	Password  			string    `gorm:"not null"`
@@ -46,7 +48,7 @@ type ResetPassword struct {
 }
 
 type UserResponse struct {
-	ID        uint		`json:"id,omitempty"`
+	ID        uuid.UUID `json:"id,omitempty"`
 	Name      string    `json:"name,omitempty"`
 	Email     string    `json:"email,omitempty"`
 	CreatedAt time.Time `json:"created_at"`

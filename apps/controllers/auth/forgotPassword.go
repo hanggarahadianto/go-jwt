@@ -12,7 +12,7 @@ import (
 	"github.com/thanhpk/randstr"
 )
 
-func ForgotPassword(c *gin.Context){
+func (rc *AuthController)ForgotPassword(c *gin.Context){
 	var forgotPasswordData models.ForgotPasswordInput
 
 	err:= c.ShouldBindJSON(&forgotPasswordData)

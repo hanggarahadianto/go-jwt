@@ -5,9 +5,11 @@ import (
 	// "go-jwt/apps/controllers/postcontroller"
 
 	"fmt"
-	"go-jwt/apps/controllers"
+	authcontrollers "go-jwt/apps/controllers/auth"
+	postcontrollers "go-jwt/apps/controllers/post"
 	"go-jwt/db"
-	"go-jwt/routes"
+	authroutes "go-jwt/routes/auth"
+	postroutes "go-jwt/routes/post"
 	"go-jwt/utils"
 	"log"
 	"net/http"
@@ -18,12 +20,17 @@ import (
 
 var (
 	server					*gin.Engine
-	AuthController      	controllers.AuthController
-	AuthRouteController		routes.AuthRouteController
+	AuthController      	authcontrollers.AuthController
+	AuthRouteController		authroutes.AuthRouteController
+
+	PostController			postcontrollers.PostController
+	PostRouteController		postroutes.PostRouteController
+
 )
 
 func init(){
-	AuthRouteController = routes.NewAuthRouteController(AuthController)
+	AuthRouteController = authroutes.NewAuthRouteController(AuthController)
+	PostRouteController = postroutes.NewRoutePostController(PostController)
 	gin.SetMode(gin.ReleaseMode)
 	server = gin.Default()
 }
@@ -50,10 +57,10 @@ func main(){
 	})
 
 	AuthRouteController.AuthRoute(router)
+	PostRouteController.PostRoute(router)
 
-	var serverPort = "9090"
-	fmt.Print("server running on port " + serverPort)
-	log.Fatal(server.Run(":"+serverPort))
+	fmt.Println("server running on port " + config.ServerPort)
+	log.Fatal(server.Run(":" + config.ServerPort))
 
 	// handleRouter()
 

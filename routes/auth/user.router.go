@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"go-jwt/apps/controllers"
+	controllers "go-jwt/apps/controllers/auth"
 	"go-jwt/apps/middlewares"
 
 	"github.com/gin-gonic/gin"
