@@ -22,6 +22,8 @@ func (pc *PostRouteController) PostRoute(rg *gin.RouterGroup){
 	r.Use(middlewares.DeserializeUser())
 	r.POST("/", pc.postController.CreatePost)
 	r.GET("/", pc.postController.GetPosts)
+	r.GET("/:postId", pc.postController.PostById)
 	r.DELETE("/:postId", pc.postController.DeletePost)
+	r.PUT("/:postId", pc.postController.UpatePost)
 
 }

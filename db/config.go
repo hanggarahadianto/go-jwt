@@ -3,6 +3,7 @@ package db
 import (
 	"fmt"
 	"go-jwt/apps/models"
+	"go-jwt/utils"
 	"log"
 
 	"gorm.io/driver/postgres"
@@ -11,7 +12,8 @@ import (
 
 var DB *gorm.DB
 
-func InitializeDb(dbConfig DbConfig){
+
+func InitializeDb(dbConfig *utils.Config){
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 	dbConfig.DBHost,
 	dbConfig.DBPort,

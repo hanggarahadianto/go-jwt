@@ -1,9 +1,6 @@
 package main
 
 import (
-
-	// "go-jwt/apps/controllers/postcontroller"
-
 	"fmt"
 	authcontrollers "go-jwt/apps/controllers/auth"
 	postcontrollers "go-jwt/apps/controllers/post"
@@ -20,8 +17,10 @@ import (
 
 var (
 	server					*gin.Engine
+
 	AuthController      	authcontrollers.AuthController
 	AuthRouteController		authroutes.AuthRouteController
+		
 
 	PostController			postcontrollers.PostController
 	PostRouteController		postroutes.PostRouteController
@@ -39,10 +38,10 @@ func main(){
 
 	config, err := utils.LoadConfig(".")
 	if err != nil {
-		log.Fatal("🚀 Could not load environment variables", err)
+		log.Fatal("🚀 Could not load environment variables ", err)
 	}
 
-	db.Run()
+	db.InitializeDb(&config)
 
 	corsConfig := cors.DefaultConfig()
 	corsConfig.AllowOrigins = []string{"http://localhost:9090", config.ClientOrigin}
@@ -59,48 +58,36 @@ func main(){
 	AuthRouteController.AuthRoute(router)
 	PostRouteController.PostRoute(router)
 
+///////////-----------------------------
+
+
+	perkalian := utils.Perkalian(4,5)
+	fmt.Println(perkalian)
+
+	title:= "belajar looping"
+	for _, letter := range title{
+		fmt.Println("letter :", string(letter) )
+	}
+
+	for i := 0; i < 5; i++ {
+		fmt.Println("saya belajar golang")
+	}
+
+	//////////-----------------------
+
 	fmt.Println("server running on port " + config.ServerPort)
 	log.Fatal(server.Run(":" + config.ServerPort))
 
-	// handleRouter()
 
-	// config, err := initializer.LoadConfig(".")
-	// if err != nil {
-	// 	log.Fatal("? Could not load environment variables", err)
-	// }
-
-	// corsConfig := cors.DefaultConfig()
-	// corsConfig.AllowOrigins = []string{"http://localhost:8000", config.ClientOrigin}
-	// corsConfig.AllowCredentials = true
-
-	// server.Use(cors.New(corsConfig))
-
-	// router := server.Group("/api")
-	// router.GET("/healthchecker", func(ctx *gin.Context) {
-	// 	message := "welcome"
-	// 	ctx.JSON(http.StatusOK, gin.H{
-	// 		"status" : "success",
-	// 		"message" : message,
-	// 	})
-	// })
-
-	// AuthRouteController.AuthRoute(router)
-	// log.Fatal(server.Run(":" + config.ServerPort))
-
-	
 }
 
-// func handleRouter(){
-// 	r := gin.Default()
-// 	configuration.ConnectDatabase()
-// 	gin.SetMode(gin.ReleaseMode)
 
-// 	 r.POST("/post", postcontroller.CreatePost)
+func cekumurbocil(age int){
+	
+	if age >= 12 {
+		fmt.Println("boleh main game")
+	} else if age <= 12 {
+		fmt.Println("lu masih bocil tolol")
+	}
 
-// 	 r.GET("/post", postcontroller.FindPosts)
-
-// 	 r.GET("/post/:id", postcontroller.ById)
-
-// 	 r.POST("/user", AuthController.SignUpUser)
-// 	log.Fatal(http.ListenAndServe(":9090", r))
-// }
+}

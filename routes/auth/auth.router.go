@@ -2,6 +2,7 @@ package routes
 
 import (
 	controllers "go-jwt/apps/controllers/auth"
+	"go-jwt/apps/middlewares"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,5 +24,7 @@ func (rc *AuthRouteController) AuthRoute(r *gin.RouterGroup){
 
 	authRoute.POST("/forgotpassword", rc.authController.ForgotPassword)
 	authRoute.PATCH("/resetpassword/:resetToken", controllers.ResetPassword)
+
+	authRoute.GET("/me",middlewares.DeserializeUser(), rc.authController.GetMe)
 
 }

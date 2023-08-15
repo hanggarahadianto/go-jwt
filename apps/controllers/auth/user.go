@@ -5,22 +5,17 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
-type UserController struct{
-	DB *gorm.DB
-}
-
-// func newUserController(DB *gorm.DB) UserController{ 
+// func newUserController(DB *gorm.DB) UserController{
 // 		return UserController{DB}
-// }	
+// }
 
-func (uc *UserController) GetMe(ctx *gin.Context){
+func (ac *AuthController) GetMe(ctx *gin.Context){
 	currentUser:= ctx.MustGet("currentUser").(models.User)
 
 	userResponse:= &models.UserResponse{
-		// ID: currentUser.ID,
+		ID: currentUser.ID,
 		Name: currentUser.Name,
 		Email: currentUser.Email,
 		CreatedAt: currentUser.CreatedAt,
